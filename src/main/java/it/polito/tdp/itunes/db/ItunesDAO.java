@@ -212,7 +212,8 @@ public class ItunesDAO {
 			ResultSet res = st.executeQuery();
 
 			while (res.next()) {
-				result.add(new Coppia(vMap.get(res.getInt("t1.TrackId")),vMap.get(res.getInt("t2.TrackId")),res.getInt("t1.n")));
+				if(res.getInt("n")>0)
+					result.add(new Coppia(vMap.get(res.getInt("t1.TrackId")),vMap.get(res.getInt("t2.TrackId")),res.getInt("t1.n")));
 			
 			}
 			conn.close();

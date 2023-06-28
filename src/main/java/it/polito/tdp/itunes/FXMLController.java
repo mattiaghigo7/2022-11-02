@@ -59,8 +59,15 @@ public class FXMLController {
     		return;
     	}
     	try {
-    		Integer i = Integer.parseInt(input);
-    		
+    		Integer i = Integer.parseInt(input)*10000;
+    		List<Track> l = model.calcolaPlaylist(i);
+    		this.txtResult.setText("Playlist creata!\n");
+    		int n = 0;
+    		for(Track t : l) {
+    			this.txtResult.appendText(t.getTrackId()+" - "+t.getName()+"\n");
+    			n+=t.getMilliseconds();
+    		}
+    		this.txtResult.appendText(""+n/1000);
     	}catch(NumberFormatException e) {
     		this.txtResult.setText("Il valore inserito non è valido.");
     		return;
@@ -90,16 +97,16 @@ public class FXMLController {
     			this.txtResult.appendText("# Vertici: "+model.getVSize()+"\n");   			
     			this.txtResult.appendText("# Archi: "+model.getASize()+"\n\n");
     			List<Set<Track>> connesse = model.calcolaConnessa();
-    			for(Set<Track> l : connesse) {
+    			for(Set<Track> s : connesse) {
     				Track prima = null;
-    				for(Track t : l) {
+    				for(Track t : s) {
     					prima = t;
     				}
-    				this.txtResult.appendText("Componente con "+l.size()+" vertici, inseriti in "+model.getP(prima)+" playlist\n");
+    				this.txtResult.appendText("Componente con "+s.size()+" vertici, inseriti in "+model.getP(prima)+" playlist\n");
     			}
     		}
     		else {
-    			this.txtResult.setText("Restringere il campo.");
+    			this.txtResult.setText("Restringere il campo. Minimo = "+v.getMin()/1000+", massimo = "+v.getMax()/1000+".");
     			return;
     		}
     	}catch(NumberFormatException e) {

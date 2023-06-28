@@ -22,11 +22,57 @@ public class Model {
 	private Map<Integer,Track> vMap;
 	private List<Coppia> archi;
 	
+	private List<Track> max;
+	private List<Track> migliore;
+	private int durata;
+	
 	public Model() {
 		this.dao=new ItunesDAO();
 		this.allGenres=new ArrayList<>(dao.getAllGenres());
 	}
 	
+	public List<Track> calcolaPlaylist(int durata){
+		this.max=new ArrayList<>();
+		this.migliore=new ArrayList<>();
+		this.durata=durata;
+		int i = 0;
+		Set<Track> maxSet = new HashSet<>();
+		List<Set<Track>> connesse = this.calcolaConnessa();
+		for(Set<Track> s : connesse) {
+			if(s.size()>i) {
+				maxSet=new HashSet<>(s);
+				i=s.size();
+			}
+		}
+		for(Track t : maxSet) {
+			this.max.add(t);
+		}
+		List<Track> parziale = new ArrayList<>();
+		ricorsione(parziale);
+		return migliore;
+	}
+	
+	private void ricorsione(List<Track> parziale) {
+		if(parziale.size()>migliore.size()) {
+			migliore=new ArrayList<>(parziale);
+		}
+		for(Track t : max) {
+			if((calcolaParziale(parziale)+t.getMilliseconds())<=this.durata && !parziale.contains(t)) {
+				parziale.add(t);
+				ricorsione(parziale);
+				parziale.remove(t);
+			}
+		}
+	}
+
+	private int calcolaParziale(List<Track> parziale) {
+		int d = 0;
+		for(Track t : parziale) {
+			d+=t.getMilliseconds();
+		}
+		return d;
+	}
+
 	public void creaGrafo(Genre g, int min, int max) {
 		this.grafo=new SimpleGraph<>(DefaultEdge.class);
 		this.vertici=new ArrayList<>(dao.getVertici(g, min, max));
