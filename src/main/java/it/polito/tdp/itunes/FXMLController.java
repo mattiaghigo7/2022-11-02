@@ -7,6 +7,7 @@ package it.polito.tdp.itunes;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import it.polito.tdp.itunes.model.Genre;
 import it.polito.tdp.itunes.model.Model;
@@ -52,7 +53,18 @@ public class FXMLController {
 
     @FXML
     void doCalcolaPlaylist(ActionEvent event) {
-
+    	String input = this.txtDTOT.getText();
+    	if(input=="") {
+    		this.txtResult.setText("Inserire il valore richiesto.");
+    		return;
+    	}
+    	try {
+    		Integer i = Integer.parseInt(input);
+    		
+    	}catch(NumberFormatException e) {
+    		this.txtResult.setText("Il valore inserito non è valido.");
+    		return;
+    	}
     }
 
     @FXML
@@ -77,9 +89,13 @@ public class FXMLController {
     			this.txtResult.setText("Grafo creato!\n");
     			this.txtResult.appendText("# Vertici: "+model.getVSize()+"\n");   			
     			this.txtResult.appendText("# Archi: "+model.getASize()+"\n\n");
-    			List<List<Track>> connesse = model.calcolaConnessa();
-    			for(List<Track> l : connesse) {
-    				this.txtResult.appendText("Componente con "+l.size()+" vertici, inseriti in "+model.getP(l.get(0))+" playlist\n");
+    			List<Set<Track>> connesse = model.calcolaConnessa();
+    			for(Set<Track> l : connesse) {
+    				Track prima = null;
+    				for(Track t : l) {
+    					prima = t;
+    				}
+    				this.txtResult.appendText("Componente con "+l.size()+" vertici, inseriti in "+model.getP(prima)+" playlist\n");
     			}
     		}
     		else {

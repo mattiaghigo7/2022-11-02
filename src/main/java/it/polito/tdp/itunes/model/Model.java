@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
+import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.traverse.DepthFirstIterator;
@@ -42,24 +43,29 @@ public class Model {
 		}
 	}
 	
-	public List<List<Track>> calcolaConnessa() {
-		List<List<Track>> connesse = new ArrayList<>();
-		List<Track> presenti = new ArrayList<>();
-		for(Track t : this.grafo.vertexSet()) {
-			if(!presenti.contains(t)) {
-				DepthFirstIterator<Track, DefaultEdge> iterator = new DepthFirstIterator<>(this.grafo,t);
-				List<Track> compConnessa = new ArrayList<>();
-				while(iterator.hasNext()) {
-					compConnessa.add(iterator.next());
-				}
-				connesse.add(compConnessa);
-				presenti.add(t);
-				presenti.addAll(compConnessa);
-			}
-		}
-		
-		return connesse;
+	public List<Set<Track>> calcolaConnessa() {
+		ConnectivityInspector<Track, DefaultEdge> inspector = new ConnectivityInspector<>(this.grafo);
+		return inspector.connectedSets();
 	}
+	
+//	public List<List<Track>> calcolaConnessa() {
+//		List<List<Track>> connesse = new ArrayList<>();
+//		List<Track> presenti = new ArrayList<>();
+//		for(Track t : this.grafo.vertexSet()) {
+//			if(!presenti.contains(t)) {
+//				DepthFirstIterator<Track, DefaultEdge> iterator = new DepthFirstIterator<>(this.grafo,t);
+//				List<Track> compConnessa = new ArrayList<>();
+//				while(iterator.hasNext()) {
+//					compConnessa.add(iterator.next());
+//				}
+//				connesse.add(compConnessa);
+//				presenti.add(t);
+//				presenti.addAll(compConnessa);
+//			}
+//		}
+//		
+//		return connesse;
+//	}
 	
 	public List<Genre> getGenres(){
 		this.allGenres.sort(null);
@@ -87,4 +93,5 @@ public class Model {
 		}
 		return p;
 	}
+	
 }
